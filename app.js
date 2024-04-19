@@ -39,6 +39,7 @@ const User = mongoose.model('User', userSchema);
 
 
 app.post('/api/login', async (req, res) => {
+  console.log('new request');
   let { email, password } = req.body;
   console.log('email', email);
   try {
@@ -131,3 +132,20 @@ app.post('/api/execute-python-script', authenticateToken, (req, res) => {
 app.listen(PORT, () => {
   console.log('Server is running');
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
