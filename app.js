@@ -73,11 +73,27 @@ const axiosInstance = axios.create({
   timeout: 10000, 
 });
 
+const accessTokens = [
+  process.env.ACCESS_TOKEN_1,
+  process.env.ACCESS_TOKEN_2,
+  process.env.ACCESS_TOKEN_3,
+  process.env.ACCESS_TOKEN_4,
+  process.env.ACCESS_TOKEN_5,
+];
+
+let currentTokenIndex = 0;
+
+function getNextAccessToken() {
+  const token = accessTokens[currentTokenIndex];
+  currentTokenIndex = (currentTokenIndex + 1) % accessTokens.length;
+  return token;
+}
+
 app.get('/api/customer-data', authenticateToken, async (req, res) => {
   const { email, page_key } = req.query;
 
   try {
-    const params = { email, access_token: process.env.access_token };
+    const params = { email, access_token: getNextAccessToken() };
     if (page_key) params.page_key = page_key;
 
     const response = await axiosInstance.get('https://api.gumroad.com/v2/sales', { params });
@@ -95,7 +111,6 @@ app.get('/api/customer-data', authenticateToken, async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch customer data.' });
   }
 });
-
 
 app.post('/api/execute-python-script', authenticateToken, (req, res) => {
   console.log('new request');
@@ -154,7 +169,6 @@ app.post('/api/change-password', authenticateToken, async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
-
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
