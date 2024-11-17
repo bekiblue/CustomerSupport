@@ -94,9 +94,11 @@ app.get('/api/customer-data', authenticateToken, async (req, res) => {
 
   try {
     const params = { email, access_token: getNextAccessToken() };
+    console.log('Params:', params);
     if (page_key) params.page_key = page_key;
 
     const response = await axiosInstance.get('https://api.gumroad.com/v2/sales', { params });
+    console.log('API Response:', response.data);
 
     if (response.data.success) {
       res.json({
